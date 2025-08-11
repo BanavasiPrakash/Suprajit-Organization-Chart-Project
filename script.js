@@ -20,14 +20,12 @@ document.getElementById('submitBtn').addEventListener('click', () => {
     drawChart(originalData);
     lastData = originalData;
 
-    // Show chart UI
     document.getElementById('chart_div').style.display = 'block';
     document.getElementById('search').style.display = 'inline-block';
     document.getElementById('refreshBtn').style.display = 'inline-block';
     document.getElementById('backBtn').style.display = 'inline-block';
     document.getElementById('printBtn').style.display = 'inline-block';
 
-    // Hide upload UI
     document.getElementById('file-controls').style.display = 'none';
     document.getElementById('page-title').style.display = 'none';
     document.getElementById('instructions').style.display = 'none';
@@ -91,82 +89,81 @@ document.getElementById('search').addEventListener('input', function () {
   subtree.push(matched);
   addSubtree(matched.ID);
 
-  drawChart(subtree, matched.ID);  // Pass matched ID for highlight
+  drawChart(subtree);
   lastData = subtree;
 });
 
 // === Draw Org Chart ===
-let chart; // store globally so print logic can access
-
-function drawChart(data, highlightId = null) {
+function drawChart(data) {
   const nodes = data.map(row => ({
     id: row.ID,
     pid: row["Parent ID"] || null,
     name: row.First_Name,
     title: row.Designation,
-    img: row.Photo || "https://cdn.balkan.app/shared/empty-img-white.svg"
+    img: row.Image_URL || "https://cdn.balkan.app/shared/empty-img-white.svg"
   }));
 
-  OrgChart.templates.olivia.size = [970, 700];
+  // Olivia template with slightly smaller profile image and bigger text
+  OrgChart.templates.olivia = Object.assign({}, OrgChart.templates.ana);
+  OrgChart.templates.olivia.size = [300, 220];
   OrgChart.templates.olivia.node =
-    '<rect x="0" y="0" height="{h}" width="{w}" rx="14" ry="14" fill="#fff" stroke="#000" stroke-width="6"></rect>';
-
-  OrgChart.templates.highlight = Object.assign({}, OrgChart.templates.olivia);
-  OrgChart.templates.highlight.node =
-    '<rect x="0" y="0" height="{h}" width="{w}" rx="16" ry="14" fill="#fff" stroke="red" stroke-width="8"></rect>';
-
-  OrgChart.templates.olivia.link =
-    '<path stroke-linejoin="round" stroke="#000" stroke-width="4px" fill="none" d="{rounded}" />';
-
+    '<rect x="0" y="0" height="{h}" width="{w}" rx="10" ry="10" fill="#fff" stroke="#000" stroke-width="2"></rect>';
+  // Profile image smaller and moved slightly up
   OrgChart.templates.olivia.img_0 =
-    '<clipPath id="ulaImg">' +
-    '<circle cx="365" cy="100" r="50"></circle>' +
-    '</clipPath>' +
-    '<image preserveAspectRatio="xMidYMid slice" clip-path="url(#ulaImg)" xlink:href="{val}" x="320" y="50" width="100" height="100"></image>';
+    '<clipPath id="circleImg"><circle cx="150" cy="40" r="25"/></clipPath>' +
+    '<image preserveAspectRatio="xMidYMid slice" clip-path="url(#circleImg)" x="125" y="15" width="50" height="50" xlink:href="{val}"/>';
 
+  // Name: increased font size, full width, wrapped and centered
   OrgChart.templates.olivia.field_0 =
-    '<foreignObject x="0" y="200" width="880" height="180">' +
-    '<div xmlns="http://www.w3.org/1999/xhtml" ' +
-    'style="margin:0; padding:7px; font-size:85px; font-weight:bold; font-family:Arial, sans-serif; color:black; text-align:center; overflow:hidden; white-space:normal; word-wrap:break-word; line-height:1.1;">{val}</div>' +
+    '<foreignObject x="10" y="75" width="280" height="70">' +
+      '<div xmlns="http://www.w3.org/1999/xhtml" ' +
+        'style="font-size:34px;font-weight:700;color:#000;text-align:center;' +
+        'line-height:1.2;word-wrap:break-word;height:100%;display:flex;' +
+        'align-items:center;justify-content:center;overflow-wrap:anywhere;">{val}</div>' +
     '</foreignObject>';
 
+  // Designation: slightly bigger font, full width, wrapped and centered
   OrgChart.templates.olivia.field_1 =
-    '<foreignObject x="0" y="380" width="880" height="190">' +
-    '<div xmlns="http://www.w3.org/1999/xhtml" ' +
-    'style="margin:0; padding:17px; font-size:80px; font-family:Arial, sans-serif; color:black; text-align:center; overflow-wrap: break-word; word-break: break-word; white-space: normal; line-height:1.1;">{val}</div>' +
+    '<foreignObject x="10" y="145" width="280" height="50">' +
+      '<div xmlns="http://www.w3.org/1999/xhtml" ' +
+        'style="font-size:22px;font-weight:600;color:#555;text-align:center;' +
+        'line-height:1.2;word-wrap:break-word;height:100%;display:flex;' +
+        'align-items:center;justify-content:center;overflow-wrap:anywhere;">{val}</div>' +
     '</foreignObject>';
 
-  OrgChart.templates.olivia.plus =
-    '<circle cx="0" cy="0" r="30" fill="Black"></circle>' +
-    '<text text-anchor="middle" alignment-baseline="middle" font-size="50" font-weight="bold" fill="#fff" x="0" y="7">+</text>';
-  OrgChart.templates.olivia.minus =
-    '<circle cx="0" cy="0" r="30" fill="Black"></circle>' +
-    '<text text-anchor="middle" alignment-baseline="middle" font-size="50" font-weight="bold" fill="#fff" x="0" y="7">–</text>';
+ OrgChart.templates.olivia.plus =
+  '<g style="cursor:pointer;">' +
+  '<circle cx="15" cy="15" r="14" fill="#fff" stroke="#000" stroke-width="5"></circle>' +
+  '<line x1="8" y1="15" x2="22" y2="15" stroke="#000" stroke-width="5" />' +
+  '<line x1="15" y1="8" x2="15" y2="22" stroke="#000" stroke-width="5" />' +
+  '</g>';
 
-  chart = new OrgChart(document.getElementById("orgChart"), {
+OrgChart.templates.olivia.minus =
+  '<g style="cursor:pointer;">' +
+  '<circle cx="15" cy="15" r="14" fill="#fff" stroke="#000" stroke-width="4"></circle>' +
+  '<line x1="8" y1="15" x2="22" y2="15" stroke="#000" stroke-width="5" />' +
+  '</g>';
+
+  OrgChart.templates.olivia.link = '<path stroke-linejoin="round" stroke="#000" stroke-width="2px" fill="none" d="{rounded}" />';
+
+  const chart = new OrgChart(document.getElementById("orgChart"), {
     nodes: nodes,
     nodeBinding: {
+      img_0: "img",
       field_0: "name",
-      field_1: "title",
-      img_0: "img"
+      field_1: "title"
     },
     scaleInitial: OrgChart.match.boundary,
     layout: OrgChart.mixed,
-    template: "olivia",
     enableSearch: false,
-    siblingSeparation: 100,
-    subtreeSeparation: 80,
-    spacing: 200,
-    levelSeparation: 180,
-    nodeMouseClick: OrgChart.action.none
+    template: "olivia",
+    spacing: 10,
+    levelSeparation: 40,
+    nodeMouseClick: OrgChart.action.none,
   });
 
-  // Auto-fit chart after it finishes rendering
-  chart.on('render', function () {
-    chart.fit();
-  });
-
-  chart.on("click", function (sender, args) {
+  // Popup binding
+  chart.on("click", function(sender, args){
     const empId = args.node.id;
     const emp = data.find(r => r.ID.toString() === empId.toString());
     const manager = data.find(r => r.ID === emp["Parent ID"]);
@@ -178,28 +175,14 @@ function drawChart(data, highlightId = null) {
 
     document.getElementById('popup').classList.remove('hidden');
   });
-
-  if (highlightId) {
-    let selectedNode = chart.get(highlightId);
-    if (selectedNode) {
-      selectedNode.template = "highlight";
-      chart.draw();
-    }
-  }
 }
 
 document.getElementById('close-popup').addEventListener('click', () => {
   document.getElementById('popup').classList.add('hidden');
 });
 
-// === Print (fix left cut-off) ===
 document.getElementById('printBtn').addEventListener('click', () => {
-  if (!chart) return;
-  let prevTransform = chart.element.style.transform;
-  chart.fit();
-  chart.element.style.transform = "scale(1) translate(0px, 0px)";
   window.print();
-  chart.element.style.transform = prevTransform;
 });
 
 window.onafterprint = function () {

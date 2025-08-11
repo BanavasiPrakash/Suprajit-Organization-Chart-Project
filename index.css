@@ -273,16 +273,17 @@ body::before {
 
   /* Show print header */
   .print-only {
-    display: flex !important;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 10px;
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    z-index: 9999;
-  }
+  display: flex !important;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  position: absolute;
+  top: 50px;  /* moved down */
+  left: 30px;
+  z-index: 9999;
+}
+
   .print-logo {
     height: 35px;
     width: auto;
