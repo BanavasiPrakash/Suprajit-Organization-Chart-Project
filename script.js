@@ -105,14 +105,14 @@ function drawChart(data, highlightId = null) {
     img: row.Photo || "https://cdn.balkan.app/shared/empty-img-white.svg"
   }));
 
-  // === Increased card size
+  // === Increased card size (width x height)
   OrgChart.templates.olivia.size = [970, 700];
 
-  // === Card border
+  // === Default card border (black)
   OrgChart.templates.olivia.node =
     '<rect x="0" y="0" height="{h}" width="{w}" rx="14" ry="14" fill="#fff" stroke="#000" stroke-width="6"></rect>';
 
-  // === Highlight template
+  // === Highlight template (red border)
   OrgChart.templates.highlight = Object.assign({}, OrgChart.templates.olivia);
   OrgChart.templates.highlight.node =
     '<rect x="0" y="0" height="{h}" width="{w}" rx="16" ry="14" fill="#fff" stroke="red" stroke-width="8"></rect>';
@@ -121,28 +121,28 @@ function drawChart(data, highlightId = null) {
   OrgChart.templates.olivia.link =
     '<path stroke-linejoin="round" stroke="#000" stroke-width="4px" fill="none" d="{rounded}" />';
 
-  // === Photo
+  // === Photo at top center (reduced size)
   OrgChart.templates.olivia.img_0 =
     '<clipPath id="ulaImg">' +
     '<circle cx="365" cy="100" r="50"></circle>' +
     '</clipPath>' +
     '<image preserveAspectRatio="xMidYMid slice" clip-path="url(#ulaImg)" xlink:href="{val}" x="320" y="50" width="100" height="100"></image>';
 
-  // === Name
+  // === Name (big font + increased height) - full width 880
   OrgChart.templates.olivia.field_0 =
     '<foreignObject x="0" y="200" width="880" height="180">' +
     '<div xmlns="http://www.w3.org/1999/xhtml" ' +
     'style="margin:0; padding:7px; font-size:85px; font-weight:bold; font-family:Arial, sans-serif; color:black; text-align:center; overflow:hidden; white-space:normal; word-wrap:break-word; line-height:1.1;">{val}</div>' +
     '</foreignObject>';
 
-  // === Designation (moved slightly up)
+  // === Designation (bigger font, moved down, adjusted size and improved wrapping)
   OrgChart.templates.olivia.field_1 =
-    '<foreignObject x="0" y="370" width="880" height="200">' +
+    '<foreignObject x="0" y="380" width="880" height="190">' +
     '<div xmlns="http://www.w3.org/1999/xhtml" ' +
     'style="margin:0; padding:17px; font-size:80px; font-family:Arial, sans-serif; color:black; text-align:center; overflow-wrap: break-word; word-break: break-word; white-space: normal; line-height:1.1;">{val}</div>' +
     '</foreignObject>';
 
-  // === Buttons
+  // === Customize the +/- expand collapse buttons ===
   OrgChart.templates.olivia.plus =
     '<circle cx="0" cy="0" r="30" fill="Black"></circle>' +
     '<text text-anchor="middle" alignment-baseline="middle" font-size="50" font-weight="bold" fill="#fff" x="0" y="7">+</text>';
@@ -157,20 +157,18 @@ function drawChart(data, highlightId = null) {
       field_1: "title",
       img_0: "img"
     },
-    scaleInitial: OrgChart.match.boundary, // ADDED for auto-fit
+    scaleInitial: OrgChart.match.boundary,
     layout: OrgChart.mixed,
     template: "olivia",
-    enableSearch: false,
-    siblingSeparation: 80,
-    subtreeSeparation: 60,
-    spacing: 180,
-    levelSeparation: 160,
-    nodeMouseClick: OrgChart.action.none
-  });
 
-  // ADDED — auto-fit chart after draw
-  chart.on('redraw', function () {
-    chart.fit();
+    enableSearch: false,
+
+    siblingSeparation: 100,
+    subtreeSeparation: 80,
+    spacing: 200,
+    levelSeparation: 180, // reduced vertical spacing for less gap
+
+    nodeMouseClick: OrgChart.action.none
   });
 
   chart.on("click", function (sender, args) {
