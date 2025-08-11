@@ -17,17 +17,17 @@ document.getElementById('submitBtn').addEventListener('click', () => {
     const sheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
     originalData = sheet;
 
-    drawChart(originalData); // This calls your Balkan chart logic
-
+    drawChart(originalData);
     lastData = originalData;
 
-    // Show chart UI and hide upload UI
+    // Show chart UI
     document.getElementById('chart_div').style.display = 'block';
     document.getElementById('search').style.display = 'inline-block';
     document.getElementById('refreshBtn').style.display = 'inline-block';
     document.getElementById('backBtn').style.display = 'inline-block';
     document.getElementById('printBtn').style.display = 'inline-block';
 
+    // Hide upload UI
     document.getElementById('file-controls').style.display = 'none';
     document.getElementById('page-title').style.display = 'none';
     document.getElementById('instructions').style.display = 'none';
@@ -35,7 +35,6 @@ document.getElementById('submitBtn').addEventListener('click', () => {
   };
   reader.readAsArrayBuffer(fileInput.files[0]);
 });
-
 
 document.getElementById('clearBtn').addEventListener('click', () => {
   location.reload();
@@ -92,66 +91,87 @@ document.getElementById('search').addEventListener('input', function () {
   subtree.push(matched);
   addSubtree(matched.ID);
 
-  drawChart(subtree);
+  drawChart(subtree, matched.ID);  // Pass matched ID for highlight
   lastData = subtree;
 });
 
-// === Draw Org Chart ===
-function drawChart(data) {
+// === Draw Org Chart (Olivia template with custom styles) ===
+function drawChart(data, highlightId = null) {
   const nodes = data.map(row => ({
     id: row.ID,
     pid: row["Parent ID"] || null,
     name: row.First_Name,
-    title: row.Designation
+    title: row.Designation,
+    img: row.Photo || "https://cdn.balkan.app/shared/empty-img-white.svg"
   }));
 
-  // Node style: white fill, black border
-  OrgChart.templates.ana.node =
-    '<rect x="0" y="0" height="{h}" width="{w}" rx="10" ry="10" fill="#fff" stroke="#000" stroke-width="2px"></rect>';
+  // === Increased card size (width x height)
+  OrgChart.templates.olivia.size = [970, 700];
 
-  OrgChart.templates.ana.size = [250, 140];
+  // === Default card border (black)
+  OrgChart.templates.olivia.node =
+    '<rect x="0" y="0" height="{h}" width="{w}" rx="14" ry="14" fill="#fff" stroke="#000" stroke-width="6"></rect>';
 
-  // Plus icon (expand)
-  OrgChart.templates.ana.plus =
-    '<circle cx="15" cy="15" r="10" fill="orange" stroke="#000" stroke-width="1"></circle>' +
-    '<line x1="10" y1="15" x2="20" y2="15" stroke="#000" stroke-width="2"></line>' +
-    '<line x1="15" y1="10" x2="15" y2="20" stroke="#000" stroke-width="2"></line>';
+  // === Highlight template (red border)
+  OrgChart.templates.highlight = Object.assign({}, OrgChart.templates.olivia);
+  OrgChart.templates.highlight.node =
+    '<rect x="0" y="0" height="{h}" width="{w}" rx="16" ry="14" fill="#fff" stroke="red" stroke-width="8"></rect>';
 
-  // Minus icon (collapse)
-  OrgChart.templates.ana.minus =
-    '<circle cx="15" cy="15" r="10" fill="orange" stroke="#000" stroke-width="1"></circle>' +
-    '<line x1="10" y1="15" x2="20" y2="15" stroke="#000" stroke-width="2"></line>';
+  // === Connection lines
+  OrgChart.templates.olivia.link =
+    '<path stroke-linejoin="round" stroke="#000" stroke-width="4px" fill="none" d="{rounded}" />';
 
-  OrgChart.templates.ana.field_0 = 
-    '<foreignObject x="5" y="15" width="240" height="80">' +
-    '<div xmlns="http://www.w3.org/1999/xhtml" style="font-size: 28px; font-weight: bold; text-align:center; line-height: 1.1;">{val}</div>' +
+  // === Photo at top center (reduced size)
+  OrgChart.templates.olivia.img_0 =
+    '<clipPath id="ulaImg">' +
+    '<circle cx="365" cy="100" r="50"></circle>' +
+    '</clipPath>' +
+    '<image preserveAspectRatio="xMidYMid slice" clip-path="url(#ulaImg)" xlink:href="{val}" x="320" y="50" width="100" height="100"></image>';
+
+  // === Name (big font + increased height) - full width 880
+  OrgChart.templates.olivia.field_0 =
+    '<foreignObject x="0" y="200" width="880" height="180">' +
+    '<div xmlns="http://www.w3.org/1999/xhtml" ' +
+    'style="margin:0; padding:7px; font-size:88px; font-weight:bold; font-family:Arial, sans-serif; color:black; text-align:center; overflow:hidden; white-space:normal; word-wrap:break-word; line-height:1.1;">{val}</div>' +
     '</foreignObject>';
 
-  OrgChart.templates.ana.field_1 = 
-    '<foreignObject x="5" y="75" width="240" height="55">' +
-    '<div xmlns="http://www.w3.org/1999/xhtml" style="font-size: 24px; color: #444; text-align:center; line-height: 1.1;">{val}</div>' +
+  // === Designation (bigger font, moved down, adjusted size and improved wrapping)
+  OrgChart.templates.olivia.field_1 =
+    '<foreignObject x="0" y="380" width="880" height="190">' +
+    '<div xmlns="http://www.w3.org/1999/xhtml" ' +
+    'style="margin:0; padding:17px; font-size:80px; font-family:Arial, sans-serif; color:black; text-align:center; overflow-wrap: break-word; word-break: break-word; white-space: normal; line-height:1.1;">{val}</div>' +
     '</foreignObject>';
 
-  OrgChart.templates.ana.link = '<path stroke-linejoin="round" stroke="#000" stroke-width="2px" fill="none" d="{rounded}" />'; 
+  // === Customize the +/- expand collapse buttons ===
+  OrgChart.templates.olivia.plus =
+    '<circle cx="0" cy="0" r="30" fill="Black"></circle>' +
+    '<text text-anchor="middle" alignment-baseline="middle" font-size="50" font-weight="bold" fill="#fff" x="0" y="7">+</text>';
+  OrgChart.templates.olivia.minus =
+    '<circle cx="0" cy="0" r="30" fill="Black"></circle>' +
+    '<text text-anchor="middle" alignment-baseline="middle" font-size="50" font-weight="bold" fill="#fff" x="0" y="7">–</text>';
 
   const chart = new OrgChart(document.getElementById("orgChart"), {
     nodes: nodes,
     nodeBinding: {
       field_0: "name",
-      field_1: "title"
+      field_1: "title",
+      img_0: "img"
     },
     scaleInitial: OrgChart.match.boundary,
     layout: OrgChart.mixed,
-    enableSearch: false,
-    template: "ana", // or 'ana', 'isla', etc.
-    spacing: 20,            // Reduce vertical space
-    levelSeparation: 80,
-    nodeMouseClick: OrgChart.action.none,
+    template: "olivia",
 
+    enableSearch: false,
+
+    siblingSeparation: 100,
+    subtreeSeparation: 80,
+    spacing: 200,
+    levelSeparation: 180, // reduced vertical spacing for less gap
+
+    nodeMouseClick: OrgChart.action.none
   });
 
-  // Popup binding
-  chart.on("click", function(sender, args){
+  chart.on("click", function (sender, args) {
     const empId = args.node.id;
     const emp = data.find(r => r.ID.toString() === empId.toString());
     const manager = data.find(r => r.ID === emp["Parent ID"]);
@@ -163,20 +183,25 @@ function drawChart(data) {
 
     document.getElementById('popup').classList.remove('hidden');
   });
-}
 
+  if (highlightId) {
+    let selectedNode = chart.get(highlightId);
+    if (selectedNode) {
+      selectedNode.template = "highlight";
+      chart.draw();
+    }
+  }
+}
 
 document.getElementById('close-popup').addEventListener('click', () => {
   document.getElementById('popup').classList.add('hidden');
 });
 
-// === Print with header + safe margins (fixed right cut) ===
+// === Print ===
 document.getElementById('printBtn').addEventListener('click', () => {
   window.print();
 });
 
-
-// ✅ Reset main window state after printing
 window.onafterprint = function () {
   document.getElementById('search').value = '';
   drawChart(originalData);

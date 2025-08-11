@@ -20,14 +20,13 @@
     <h2 id="page-title">Suprajit Engineering Limited</h2>
   </div>
 
-
   <h2 id="page-title1">Organization Chart</h2>
 
   <!-- Upload Section -->
   <div class="upload-container">
     <p id="instructions">
       Upload an <b>.xlsx</b> file with columns: 
-      <code>ID</code>, <code>First_Name</code>, <code>Parent ID</code>, <code>Designation</code>
+      <code>ID</code>, <code>First_Name</code>, <code>Parent ID</code>, <code>Designation</code>, <code>Photo</code>
     </p>
     <div class="controls" id="file-controls">
       <label for="upload" class="custom-file-upload">Choose File</label>
@@ -49,11 +48,12 @@
     <div id="orgChart" style="width:100%; height:100%;"></div>
   </div>
 
-  <!-- Employee Info Popup  -->
+  <!-- Employee Info Popup -->
   <div id="popup" class="popup hidden">
     <div class="popup-content">
       <span id="close-popup" class="close">&times;</span>
-      <h3>Employee Details</h3>
+      <img id="emp-photo" src="" alt="Profile Photo"
+           style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; display: block; margin: 0 auto 20px;" />
       <div class="popup-field"><strong>ID:</strong> <span id="emp-id"></span></div>
       <div class="popup-field"><strong>NAME:</strong> <span id="emp-name"></span></div>
       <div class="popup-field"><strong>DESIGNATION:</strong> <span id="emp-designation"></span></div>

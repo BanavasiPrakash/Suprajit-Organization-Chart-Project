@@ -22,7 +22,6 @@ body {
 .header-container #page-title { margin: 0; }
 
 /* Titles */
-
 #page-title {
   font-size: 4em;
   font-weight: bold;
@@ -35,12 +34,12 @@ body {
   -webkit-text-fill-color: transparent;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
-#chart-title,  .header h2 {
-  font-size: 2em;
+#chart-title, .header h2 {
+  font-size: 20px;
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 2px;
-  margin: 10px 0;
+  margin: 5px 0;
   background: linear-gradient(90deg, #0928ec, #f91b1b);
   -webkit-background-clip: text;
   background-clip: text;
@@ -48,7 +47,6 @@ body {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 .header h4 {
-  /* font-size: 3em; */
   font-weight: 1000;
   text-transform: uppercase;
   letter-spacing: 3px;
@@ -60,9 +58,7 @@ body {
   -webkit-text-fill-color: transparent;
   text-shadow: 4px 4px 6px rgba(0, 0, 0, 0.3);
 }
-
-#page-title1,
-.header h2 {
+#page-title1, .header h2 {
   font-size: 2em;
   font-weight: 1000;
   text-transform: uppercase;
@@ -77,9 +73,20 @@ body {
 }
 
 /* Upload Section */
-.upload-container { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.upload-container { 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: center; 
+}
 p { font-size: 1em; margin-bottom: 20px; }
-.controls { margin: 20px 0; display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; }
+.controls { 
+  margin: 20px 0; 
+  display: flex; 
+  justify-content: center; 
+  flex-wrap: wrap; 
+  gap: 15px; 
+}
 input[type="file"] { display: none; }
 
 /* Buttons */
@@ -93,7 +100,6 @@ input[type="file"] { display: none; }
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   transition: all 0.3s ease;
 }
-
 .styled-button {
   font-size: 10px;
   padding: 4px 8px;
@@ -127,6 +133,16 @@ input[type="file"] { display: none; }
   overflow: hidden;
   z-index: 1;
 }
+
+/* ✅ NEW: Right-align OrgChart search bar inside chart_div */
+.orgchart-search-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -20px;
+  margin-bottom: 10px;
+  padding-right: 20px;
+}
+
 #chart-container {
   display: flex;
   justify-content: center;
@@ -137,25 +153,68 @@ input[type="file"] { display: none; }
   background: linear-gradient(145deg, #eaecd1, #bedce6);
 }
 .search-controls {
-  display: flex; justify-content: center; align-items: center;
-  flex-wrap: wrap; gap: 10px; margin: 0px; margin-bottom: 10px;
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+  flex-wrap: wrap; 
+  gap: 10px; 
+  margin: 0px; 
+  margin-bottom: 10px;
 }
 #search {
-  padding: 4px; border-radius: 8px; border: none;
-  width: 200px; font-size: 10px; display: none;
+  padding: 4px; 
+  border-radius: 8px; 
+  border: none;
+  width: 200px; 
+  font-size: 10px; 
+  display: none;
 }
 
 /* Popup */
-.popup { position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; }
-.popup-content { background: white; padding: 25px; border-radius: 12px; width: 300px; text-align: left; position: relative;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+.popup { 
+  position: fixed; 
+  top: 0; left: 0; 
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5); 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  z-index: 1000; 
+}
+.popup-content { 
+  background: white; 
+  padding: 25px; 
+  border-radius: 12px; 
+  width: 300px; 
+  text-align: left; 
+  position: relative;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2); 
+}
 .popup-content h3 { margin-top: 0; }
 .popup-field { margin: 10px 0; }
 .popup-field strong { display: inline-block; width: 110px; text-align: left; }
 .close { position: absolute; top: 8px; right: 12px; font-size: 24px; cursor: pointer; }
 .hidden { display: none; }
 
+/* ✅ Popup Styles refinement */
+#popup.hidden { display: none; }
+#popup { 
+  position: fixed; 
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%); 
+  padding: 20px; 
+  z-index: 999; 
+  border-radius: 10px;
+}
+#popup .popup-content { text-align: left; }
+#close-popup {
+  float: right;
+  cursor: pointer;
+  font-size: 18px;
+  color: red;
+  font-weight: bold;
+}
 
 /* ✅ Watermark */
 body::before {
@@ -173,10 +232,16 @@ body::before {
   pointer-events: none;
 }
 
+/* Toggle button style */
 .orgchart .toggle {
   fill: orange !important;
-  stroke: #000 !important;  /* Optional: black border */
+  stroke: #000 !important;
   stroke-width: 1px !important;
+}
+
+/* Toolbar styling */
+#toolbar {
+  margin: 15px;
 }
 
 /* Hide print header by default */
@@ -186,6 +251,7 @@ body::before {
   position: absolute;
 }
 
+/* === PRINT MODE === */
 @media print {
   body, html {
     margin: 0 !important;
@@ -200,45 +266,35 @@ body::before {
     print-color-adjust: exact;
   }
 
-  body::before {
-    display: none !important; /* remove watermark logo */
-  }
+  body::before { display: none !important; }
 
-  #print-header {
-    border: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
+  /* Hide toolbar */
+  #toolbar { display: none !important; }
 
-  img.print-logo {
-    border: none !important;
-    display: block;
-  }
-
+  /* Show print header */
   .print-only {
-    display: flex !important;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 10px;
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 9999;
-  }
+  display: flex !important;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  position: absolute;
+  top: 40px;  /* moved down */
+  left: 5px;
+  z-index: 9999;
+}
 
   .print-logo {
     height: 35px;
     width: auto;
   }
-
   .print-title {
     font-size: 24px;
     font-weight: bold;
     color: darkblue !important;
   }
 
-  /* Hide everything else */
+  /* Hide unnecessary elements */
   .header-container,
   #page-title,
   #page-title1,
@@ -248,25 +304,103 @@ body::before {
   .search-controls,
   .styled-button,
   #search,
-  #popup,
-  body::before {
+  #popup {
     display: none !important;
   }
 
+  /* Chart adjustments */
   #chart_div {
-    position: relative !important; /* Prevent it from covering print-header */
+    position: relative !important;
     z-index: 0 !important;
     margin-top: 70px;
     background: #fff !important;
     padding: 0 !important;
     height: auto !important;
+    overflow: visible !important;
   }
-
   #orgChart {
     display: flex;
     justify-content: center;
     text-align: center;
     align-items: center;
     margin: 0 auto;
+    height: auto !important;
+    overflow: visible !important;
+    
   }
+  svg {
+    height: auto !important;
+    width: auto !important;
+    overflow: visible !important;
+  }
+
+  /* ✅ Expand/Collapse Button Styling */
+  .orgchart .node .toggle {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 20px !important;
+    line-height: 24px !important;
+    background-color: white !important;
+    color: black !important;
+    border: 2px solid black !important;
+    box-shadow: none !important;
+  }
+
+  /* === Extended Popup Card with Profile Photo === */
+.popup-content {
+  max-width: 360px;
+  padding: 25px 20px;
+  text-align: center;
+  position: relative;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.popup-avatar {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #007bff;
+  margin: 0 auto 15px;
+}
+
+.popup-content h2 {
+  margin: 0 0 10px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #333;
+}
+
+.popup-content p {
+  font-size: 14px;
+  margin: 6px 0;
+  color: #444;
+}
+
+#close-popup {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 22px;
+  font-weight: bold;
+  background: red;
+  color: white;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Optional: Better layout for each data row in popup */
+.popup-field {
+  margin: 6px 0;
+  font-size: 14px;
+}
+
 }
