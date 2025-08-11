@@ -132,7 +132,7 @@ function drawChart(data, highlightId = null) {
   OrgChart.templates.olivia.field_0 =
     '<foreignObject x="0" y="200" width="880" height="180">' +
     '<div xmlns="http://www.w3.org/1999/xhtml" ' +
-    'style="margin:0; padding:7px; font-size:88px; font-weight:bold; font-family:Arial, sans-serif; color:black; text-align:center; overflow:hidden; white-space:normal; word-wrap:break-word; line-height:1.1;">{val}</div>' +
+    'style="margin:0; padding:7px; font-size:85px; font-weight:bold; font-family:Arial, sans-serif; color:black; text-align:center; overflow:hidden; white-space:normal; word-wrap:break-word; line-height:1.1;">{val}</div>' +
     '</foreignObject>';
 
   // === Designation (bigger font, moved down, adjusted size and improved wrapping)
